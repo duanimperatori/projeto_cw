@@ -93,3 +93,28 @@ def read_from_dw_sql(query):
     return df
 
 
+def create_primary_key(table_name, primary_key):
+
+    conn = psycopg2.connect(
+        host=db_params['host'],
+        user=db_params['user'],
+        password=db_params['password'],
+        port=db_params['port'],
+        database=db_params['database']
+    )
+
+    cur = conn.cursor()
+
+    # Execute the query
+    cur.execute(
+        f"""
+        ALTER TABLE {table_name} ADD CONSTRAINT {table_name}_pk PRIMARY KEY ({primary_key});
+        """
+    )
+    
+    # Commit the changes
+    conn.commit()
+
+    # Close the cursor and connection
+    cur.close()
+    conn.close()
